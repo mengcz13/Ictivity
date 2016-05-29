@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'Ictuser',
     'activity',
-    'interact'
+    'interact',
+    'app'
 ]
 
 
@@ -122,8 +123,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+# physical address of static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (BASE_DIR,'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATICFILES_DIRS += (BASE_DIR,'media')
+
+SESSION_COOKIE_AGE=60*30
+
 
 
 LOGIN_URL = '/api/user/login'

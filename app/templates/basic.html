@@ -1,0 +1,89 @@
+{% load staticfiles %}
+
+<!doctype html>
+<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="author" content="ThemeFuse">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ictivity | {% block subtitle %}Basic Template{% endblock %}</title>
+
+<!-- main JS libs -->
+<script src="{% static 'js/libs/modernizr.min.js' %}"></script>
+<script src="{% static 'js/libs/jquery-1.10.0.js' %}"></script>
+<script src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/libs/bootstrap.min.js' %}"></script>
+
+<!-- jQuery md5 module -->
+<script src="{% static 'js/jquery.md5.js' %}"></script>
+
+<!-- bootstrap and jQuery tags module -->
+<script src="{% static 'js/jquery.tags.min.js' %}"></script>
+
+<!-- Style CSS -->
+<link href="{% static 'css/bootstrap.css' %}" media="screen" rel="stylesheet">
+<link href="{% static 'style.css' %}" media="screen" rel="stylesheet">
+
+<!-- scripts -->
+<script src="{% static 'js/general.js' %}"></script>
+
+<!-- custom input -->
+<script src="{% static 'js/jquery.customInput.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
+<!-- Placeholders -->
+<script type="text/javascript" src="{% static 'js/jquery.powerful-placeholder.min.js' %}"></script>
+<!-- Progress Bars -->
+<script src="{% static 'js/progressbar.js' %}"></script>
+<!-- Calendar -->
+<link href="{% static 'css/jquery-ui-1.8.20.custom.css' %}" rel="stylesheet">
+<script src="{% static 'js/jquery-ui.multidatespicker.js' %}"></script>
+<!-- Graph Builder -->
+<!-- deleted -->
+<!-- range sliders -->
+<script src="{% static 'js/jquery.slider.bundle.js' %}"></script>
+<script src="{% static 'js/jquery.slider.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/jslider.css' %}">
+<!-- Video Player -->
+<link href="{% static 'css/video-js.css' %}" rel="stylesheet">
+<script src="{% static 'js/video.js' %}"></script>
+<!-- Audio Player -->
+<link href="{% static 'css/jplayer.css' %}" rel="stylesheet">
+<script src="{% static 'js/jquery.jplayer.min.js' %}"></script>
+<script src="{% static 'js/jplayer.playlist.min.js' %}"></script>
+<!-- deleted -->
+
+<!-- Scroll Bars -->
+<script src="{% static 'js/jquery.mousewheel.js' %}"></script>
+<script src="{% static 'js/jquery.jscrollpane.min.js' %}"></script>
+<!-- deleted -->
+
+<!--[if lt IE 9]><script src="{% static 'js/respond.min.js' %}"></script><![endif]-->
+<!--[if gte IE 9]>
+<style type="text/css">
+    .gradient {filter: none !important;}
+</style>
+<![endif]-->
+
+<!-- load global tools functions -->
+<script src="{% static 'js/lly/global.js' %}"></script>
+</head>
+
+<body>
+	
+
+	{% block body %}
+	<div class="container container-wide">
+		<!-- content -->
+		<div class="content " role="main">
+
+		</div>
+	</div>
+	{% endblock %}
+	
+	
+</body>

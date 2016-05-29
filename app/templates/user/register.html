@@ -1,0 +1,106 @@
+{% extends 'viewBasic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}Login{% endblock %}
+
+{% block contents %}
+
+<style type="text/css">
+	.foot
+	{
+	position: relative;
+	padding: 14px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    background: #f8f3f0;
+    }
+    .extfoot
+    {
+	position: relative;
+	padding: 14px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    background: #FFFFFF;
+    }
+</style>
+	<div class="container container-wide">
+		<!-- content -->
+		<div class="content" role="main">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<div class="widget-container boxed">
+					<div class="widget-title">
+						<h4 style="color: white">
+							注册
+						</h4>
+					</div>
+					<form role="form">
+					<div class="inner">
+						
+							<br>
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<input type="text" name="username" id="username_input" placeholder="用户名">
+									<p class="help-block" style="color:red">* &nbsp; 必填</p>
+								</div>
+								<div class="alert alert-danger" id="username_wrong">用户名不能为空</div>
+							</div>
+							
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<input type="password" name="password" id="password_input" placeholder="密码">
+									<p class="help-block" style="color:red">* &nbsp; 必填</p>
+								</div>
+								<div class="alert alert-danger" id="password_wrong">密码不能为空</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<input type="password" name="password_again" id="password_again_input" placeholder="密码确认">
+									<p class="help-block" style="color:red">* &nbsp; 必填</p>
+								</div>
+								<div class="alert alert-danger" id="password_again_wrong">两次输入的密码不同</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="fild_text_omega">
+									<input type="text" name="nickname" id="nickname_input" placeholder="昵称">
+									<p class="help-block"><small>若空则昵称与用户名同</small></p>
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="fild_text_omega">
+									<input type="text" name="email" id="email_input" placeholder="E-mail">
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="fild_text_omega">
+									<input type="text" name="location" id="location_input" placeholder="所在地">
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="fild_text_omega">
+									<input type="text" name="birthday" id="birthday_input" placeholder="生日">
+									<p class="help-block"><small>格式：XXXX-XX-XX</small></p>
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								`<div class="alert alert-danger" id="general_wrong">注册中发生了一些错误</div>
+							</div>
+							<br>
+						
+					</div>
+					<div class="foot">
+						<div class="clearfix" style="margin:20px">
+							<a href="#" id="registerBtn" class="btn btn-blue btn-block"><span>注册</span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
+	
+	<div style="min-height:100px"></div>
+	
+<script src="{% static 'js/lly/register.js'%}"></script>
+	
+{% endblock %}

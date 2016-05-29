@@ -1,0 +1,137 @@
+{% extends 'viewBasic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}活动主页{% endblock %}
+
+{% block contents %}
+
+<style type="text/css">
+    .mytab
+	{
+	position: relative;
+	padding: 14px 14px 14px 14px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    margin-bottom: 30px;
+    background: #f8f3f0;
+    }
+</style>
+
+<div class="container container-wide">
+	<div class="comment-list styled clearfix">
+		<div class="comment first last">
+			<div class="comment-body boxed">
+				<div class="comment-arrow">
+				</div>
+				<div class="comment-avatar" id="activityIcon">
+					<div class="avator">
+						<img id="defaultActivityIcon" src="/static/images/icons/defaultIcon.png" width=80px>
+					</div>
+				</div>
+				<div class="comment-text">
+					<div class="comment-author clearfix">
+						<div class="link-author text-center">
+							后台系统
+						</div>
+					</div>
+					<div class="comment-author clearfix">
+						<a href="#" id="activityNameLabel" class="link-author" hidefocus="true" style="outline: none;">
+							活动名称
+						</a>
+					</div>
+					<div class="comment-entry">
+						<div>
+							<span class="glyphicon glyphicon-user"></span>
+							<span id="activityCount">0</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="tabs_framed styled widget-stats" style="min-height:300px">
+		<ul class="tabs clearfix">
+			<li class="active"><a href="#infoTab" data-toggle="tab">基本信息</a></li>
+			<li><a href="#verifyTab" data-toggle="tab">审核申请</a></li>
+			<li><a href="#signTab" data-toggle="tab">签到与投票</a></li>
+			<li><a href="#prizeTab" data-toggle="tab">抽奖管理</a></li>
+		</ul>
+		<div class="tab-content boxed clearfix">
+			<div class="tab-pane fade in active" id="infoTab">
+				<div class="inner clearfix">
+					<div class="clearfix" style="margin:20px">
+						<div class="field_text_omega">
+							<label for="id_input">活动ID</label>
+							<input type="text" name="id" id="id_input" disabled>
+						</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="field_text_omega">
+							<label for="name_input">活动名称</label>
+							<input type="text" name="name" id="name_input" disabled>
+						</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="field_text_omega">
+							<label for="tags_input">标签</label>
+							<input data-toggle="tags" name="tags" id="tags_input" placeholder="Tags">
+							<p class="help-block">回车键添加新标签</p>
+						</div>
+						<div class="alert alert-danger" id="tags_input_wrong">标签不合法</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="field_text_omega">
+							<input type="text" name="tags" id="description_input" placeholder="描述">
+							<p class="help-block">活动的简短介绍</p>
+						</div>
+						<div class="alert alert-danger" id="description_input_wrong">描述过长</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="input_styled checklist pull-left">
+							<div class="rowCheckbox checkbox-large checkbox-noText">
+								<div class="custom-checkbox">
+									<input name="ispublic" type="checkbox" id="ispublic_input" hidefocus="true" style="outline:none;">
+									<label for="ispublic_input" >是否公开</label>
+								</div>
+							</div>
+							<p class="help-block">公开活动可被检索与加入，非公开活动只能通过签到二维码加入</p>
+						</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="input_styled checklist pull-left">
+							<div class="rowCheckbox checkbox-large checkbox-noText">
+								<div class="custom-checkbox">
+									<input name="isverify" type="checkbox" id="isverify_input" hidefocus="true" style="outline:none;">
+									<label for="isverify_input">是否审核</label>
+								</div>
+							</div>
+							<p class="help-block">审核活动的加入需要管理者审核，非审核活动则不需要</p>
+						</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<div class="alert alert-danger" id="general_wrong">修改活动信息时发生了一些错误</div>
+					</div>
+					<div class="clearfix" style="margin:20px">
+						<a href="#" class="btn btn-blue btn-block" id="changeInfoBtn"><span>保存信息</span></a>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="verifyTab">
+				<div class="inner clearfix">
+				</div>
+			</div>
+			<div class="tab-pane fade" id="signTab">
+				<div class="inner clearfix">
+				</div>
+			</div>
+			<div class="tab-pane fade" id="prizeTab">
+				<div class="inner clearfix">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'js/lly/backstage.js'%}"></script>
+{% endblock %}

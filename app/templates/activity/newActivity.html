@@ -1,0 +1,107 @@
+{% extends 'viewBasic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}发起新活动{% endblock %}
+
+{% block contents %}
+<style type="text/css">
+	.foot
+	{
+	position: relative;
+	padding: 14px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    background: #f8f3f0;
+    }
+    .extfoot
+    {
+	position: relative;
+	padding: 14px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    background: #FFFFFF;
+    }
+</style>
+
+	<div class="container container-wide">
+		<!-- content -->
+		<div class="content" role="main">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<div class="widget-container boxed">
+					<div class="widget-title">
+						<h4 style="color: white">
+							新活动
+						</h4>
+					</div>
+					<form role="form">
+					<div class="inner">
+						
+							<br>
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<input type="text" name="activitiyName" id="activitiyName_input" placeholder="活动名">
+									<p class="help-block" style="color:#AA00000">活动名一经确认，不能更改</p>
+								</div>
+								<div class="alert alert-danger" id="activitiyName_wrong">活动名不合法或重名，换个名字试试？</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<label for="tags_input">标签</label>
+									<input data-toggle="tags" name="tags" id="tags_input" placeholder="Tags">
+									<p class="help-block">回车键添加新标签</p>
+								</div>
+								<div class="alert alert-danger" id="tags_input_wrong">标签不合法</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="field_text_omega">
+									<input type="text" name="tags" id="description_input" placeholder="描述">
+									<p class="help-block">活动的简短介绍</p>
+								</div>
+								<div class="alert alert-danger" id="description_input_wrong">描述过长</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="input_styled checklist pull-left">
+									<div class="rowCheckbox checkbox-large checkbox-noText">
+										<div class="custom-checkbox">
+											<input name="ispublic" type="checkbox" id="ispublic_input" hidefocus="true" style="outline:none;">
+											<label for="ispublic_input">是否公开</label>
+										</div>
+									</div>
+									<p class="help-block">公开活动可被检索与加入，非公开活动只能通过签到二维码加入</p>
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="input_styled checklist pull-left">
+									<div class="rowCheckbox checkbox-large checkbox-noText">
+										<div class="custom-checkbox">
+											<input name="isverify" type="checkbox" id="isverify_input" hidefocus="true" style="outline:none;">
+											<label for="isverify_input">是否审核</label>
+										</div>
+									</div>
+									<p class="help-block">审核活动的加入需要管理者审核，非审核活动则不需要</p>
+								</div>
+							</div>
+							<div class="clearfix" style="margin:20px">
+								<div class="alert alert-danger" id="general_wrong">新活动创建时发生了一些错误</div>
+							</div>
+							<br>
+					</div>
+					<div class="foot">
+						<div class="clearfix" style="margin:20px">
+							<a href="#" class="btn btn-blue btn-block" id="createBtn"><span>新建活动</span></a>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
+	
+	<div style="min-height:100px"></div>
+	
+	</div>
+	
+	<script src="{% static 'js/lly/newActivity.js' %}"></script>
+{% endblock %}
