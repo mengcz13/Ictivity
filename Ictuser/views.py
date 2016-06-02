@@ -23,10 +23,11 @@ def Ictuser_register(request):
 		return JsonResponse({'error_code': 1})
 	user = User.objects.create_user(data['username'], data['email'], data['password'])
 	userprofile = UserProfile.objects.create(user=user, location=data['location'], birthday=data['birthday'], nickname='', face_id='', age=0)
-	return JsonResponse({'error_code': 0, '_id': user.id})
+	return JsonResponse({'error_code': 200, '_id': user.id})
 
 
 @ensure_csrf_cookie
+@require_POST
 def Ictuser_login(request):
 	if request.method == 'GET':
 		if request.user.is_authenticated():
@@ -50,6 +51,7 @@ def Ictuser_login(request):
 
 
 @ensure_csrf_cookie
+@require_POST
 def Ictuser_logout(request):
 	logout(request)
 	return JsonResponse({'error_code': 200})
@@ -57,11 +59,43 @@ def Ictuser_logout(request):
 
 @login_required
 @ensure_csrf_cookie
+@require_POST
 def Ictuser_userinfo(request):
 	return JsonResponse({
 		'error_code': 200,
 		'username': request.user.username,
-		'emali': request.user.email,
+		'email': request.user.email,
 		'location': request.user.userprofile.location,
 		'birthday': request.user.userprofile.birthday
 		})
+
+
+@login_required
+@ensure_csrf_cookie
+@require_POST
+def Ictuser_changeinfo(request):
+	try:
+		request.user.update(email=request.POST['email'])
+		request.user.userprofile.update(location=request.POST['location'], birthday=request.POST['birthday'])
+		return JsonResponse({'error_code': 200})
+	except:
+		return JsonResponse({'error_code': 1})
+
+
+@login_required
+@ensure_csrf_cookie
+@require_POST
+def Ictuser_changepwd(request):
+	user = authenticate(username=request.user.username, password=request.POST['oldpwd'])
+	if user is not None:
+		user.set_password(request.POST['newpwd'])
+		return JsonResponse({'error_code': 200})
+	else:
+		return JsonResponse({'error_code': 1})
+
+
+@login_required
+@ensure_csrf_cookie
+@require_POST
+def Ictuser_token(request):
+	return JsonResponse({'error_code': 200, 'access_token': 1})
