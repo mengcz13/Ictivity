@@ -1,0 +1,45 @@
+{% extends 'viewBasic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}活动搜索{% endblock %}
+
+{% block contents %}
+
+<style type="text/css">
+	.foot
+	{
+	position: relative;
+	padding: 14px 14px 14px 10px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    background: #f8f3f0;
+    }
+</style>
+
+	<div class="container container-wide">
+		<div class="widget-container widget_search styled boxed line-left">
+			<div class="inner">
+				<form method="get" id="searchForm" action="#">
+					<div class="clearfix">
+						<span class="btn">
+							<input type="submit" value="搜活动" id="searchSubmitBtn" hidefocus="true" class="gradient" style="outline: none;"/>
+						</span>
+						<div class="field_text">
+							<input name="search" id="search_input" value type="text" placeholder="活动名" hidefocus="true" style="outline: none;" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="widget-container widget_search styled boxed line-left">
+			<div class="inner" id="resultView">
+				<div class="foot">
+					共找到&nbsp;<span id="count_text">0</span>&nbsp;个活动<br>
+				</div>
+				<div style="min-height: 10px"></div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="{% static 'js/lly/search.js' %}"></script>
+{% endblock %}

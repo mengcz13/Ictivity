@@ -1,0 +1,199 @@
+{% extends 'viewBasic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}信息设置{% endblock %}
+
+{% block contents %}
+
+<style type="text/css">
+	.myLabel 
+	{
+		font-size: 14px;
+		padding-bottom: 10px;
+	}
+	.foot
+	{
+	position: relative;
+	padding: 14px 0;
+	-webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    background: #f8f3f0;
+    }
+    .mytab
+	{
+	position: relative;
+	padding: 14px 14px 14px 14px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    background: #f8f3f0;
+    }
+</style>
+
+	<div class="container container-wide">
+		<div class="tabs_framed styled">
+			<ul class="tabs clearfix">
+				<li class="active"><a href="#basic" data-toggle="tab">基本信息设置</a></li>
+				<li><a href="#photos" data-toggle="tab" id="photoLoadToggle">照片库</a></li>
+				<li><a href="#passwd" data-toggle="tab">密码重设</a></li>
+			</ul>
+		
+			<div class="tab-content boxed clearfix">
+				<div class="tab-pane fade in active" id="basic">
+					<form role="form" id="basicForm">
+					<div class="inner clearfix" style="padding:40px">
+							<fieldset disabled>
+							<div class="field_text_omega">
+								<label for="username_input" class="myLabel">用户名</label>
+								<input type="text" name="username" id="username_input" placeholder="用户名" disabled>
+							</div>
+							<br>
+							</fieldset>
+							<div class="field_text_omega">
+								<label for="username_input" class="myLabel">E-mail</label>
+								<input type="text" name="email" id="email_input" placeholder="E-mail">
+							</div>
+							<br>
+							<div class="field_text_omega">
+								<label for="location_input" class="myLabel">所在地</label>
+								<input type="text" name="location" id="location_input" placeholder="所在地">
+							</div>
+							<br>
+							<div class="field_text_omega">
+								<label for="birthday_input" class="myLabel">生日</label>
+								<input type="text" name="birthday" id="birthday_input" placeholder="生日">
+							</div>
+							<br>
+							<div class="clearfix">
+								<div class="alert alert-danger" id="basic_wrong">抱歉，保存过程中发生了一些错误。</div>
+							</div>
+						
+					</div>
+					<div class="foot">
+						<div class="clearfix">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<div style="margin:20px">
+									<a href="#" class="btn btn-blue btn-block" id="basicSaveBtn"><span>保存</span></a>
+								</div>
+								<input type="submit" hidden />
+							</div>
+							<div class="col-md-4"></div>
+						</div>
+					</div>
+					</form>
+				</div>
+				<div class="tab-pane fade in" id="photos">
+					<div class="inner clearfix" style="padding:40px">
+						<div class="clearfix">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<a href="#" id="uploadToggleBtn" class="btn btn-blue btn-block" hidefocus="true" style="outline: none;" id="uploadPhotoBtn">
+									<span class="gradient">上传照片</span>
+								</a>
+							</div>
+							<div class="col-md-4"></div>
+						</div>
+						<br>
+						<div class="clearfix" style="text-align: center;">
+							<p class="help-block">丰富照片库可有效提高识别的精确度</p>
+							<p class="help-block">当然，您也可以在签到时实时上传</p>
+						</div>
+						<hr>
+						<div class="mytab">
+							共有&nbsp;<span id="photoCount">0</span>&nbsp;张照片
+						</div>
+						<br>
+						<div id="photoSpace">
+						</div>
+						<div id="emptySpace" style="min-height:200px"></div>
+					</div>
+				</div>
+				<div class="tab-pane fade in" id="passwd">
+					<form role="form" id="pwdForm">
+					<div class="inner clearfix" style="padding:40px">
+							<div class="field_text_omega">
+								<label for="password_input" class="myLabel">原密码</label>
+								<input type="password" name="password" id="password_input" placeholder="原密码">
+							</div>
+							<div class="clearfix">
+								<div class="alert alert-danger" id="password_wrong">原密码错误。</div>
+							</div>
+							<br>
+							<div class="field_text_omega">
+								<label for="newusername_input" class="myLabel">新密码</label>
+								<input type="password" name="newpassword" id="newpassword_input" placeholder="新密码">
+							</div>
+							<div class="clearfix">
+								<div class="alert alert-danger" id="newpassword_wrong">密码不能为空。</div>
+							</div>
+							<br>
+							<div class="field_text_omega">
+								<label for="newusername2_input" class="myLabel">新密码确认</label>
+								<input type="password" name="newpassword2" id="newpassword2_input" placeholder="新密码确认">
+							</div>
+							<div class="clearfix">
+								<div class="alert alert-danger" id="newpassword2_wrong">两次输入的密码不一致。</div>
+							</div>
+							<br>
+							<div class="clearfix">
+								<div class="alert alert-danger" id="pwd_wrong">抱歉，密码重设过程中发生了一些错误。</div>
+							</div>
+						
+					</div>
+					<div class="foot">
+						<div class="clearfix">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<div style="margin:20px">
+									<a href="#" class="btn btn-red btn-block" id="passwordChangeBtn"><span>重设密码</span></a>
+								</div>
+								<input type="submit" hidden />
+							</div>
+							<div class="col-md-4"></div>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="photoUploadModal" tabindex="-1" role="dialog"  aria-labelledby="photoUploadModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                	&times;
+            	</button>
+            	<h4 class="modal-title" id="photoUploadModalLabel">
+               		上传照片
+            	</h4>
+         	</div>
+         	<div class="modal-body">
+            	请选择一张您的照片
+            	
+            	<div class="clearfix" style="margin:20px">
+      				<input type="file" id="inputfile">
+      				<div class="alert alert-danger" id="uploadWrong">
+      					上传错误，错误代码&nbsp;<span id="uploadWrongSpan">0</span>&nbsp;。
+      				</div>
+      				<p class="help-block">照片越真实，识别正确率越高。</p>
+  				</div>
+  			</div>
+         	<div class="modal-footer">
+            	<a href="#" type="button" class="btn btn-green btn-small" data-dismiss="modal"
+            	hidefocus="true" style="outline:none;">
+            		<span class="gradient">关闭</span>
+            	</a>
+            	<a href="#" type="button" class="btn btn-blue btn-small"
+            	hidefocus="true" style="outline:none;" id="uploadPhotoBtn">
+            		<span class="gradient">上传</span>
+           		</a>
+         	</div>
+      	</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+	</div>
+	
+<script src="{% static 'js/lly/profile.js' %}"></script>
+
+{% endblock %}

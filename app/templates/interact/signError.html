@@ -1,0 +1,33 @@
+{% extends 'basic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}签到失败{% endblock %}
+
+{% block body %}
+	
+	<div class="container container-wide" style="min-height:500px">
+		<div class="content" role="main">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="widget-container boxed">
+					<div class="widget-title">
+						<h4 style="color: white">
+							签到失败
+						</h4>
+					</div>
+					<div class="inner" id="qrcodeDiv">
+						<center style="padding-bottom:200px; padding-top:200px">
+							<p><h3>十分抱歉，本次签到失败。</h3></p>
+							<p><h4><small>失败原因可能是不合法的签到ID，错过签到时间窗口，口令输入错误，以及人脸认证失败。</small></h4></p>
+							<a href="/" class="btn btn-blue">
+								<span class="gradient">回首页</span>
+							</a>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+	
+{% endblock %}
