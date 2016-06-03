@@ -76,8 +76,8 @@ function changepwd() {
 		"/api/user/changepwd",
 		{
 			access_token: accessToken,
-			oldpwd: $("#password_input").val(),
-			newpwd: $("#newpassword_input").val()
+			oldpwd: $.md5($("#password_input").val()),
+			newpwd: $.md5($("#newpassword_input").val())
 		},
 		function(data) {
 			data = eval(data);

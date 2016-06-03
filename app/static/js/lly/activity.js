@@ -15,6 +15,7 @@ $(document).ready(function() {
 	$("#joinToggleBtn").click(joinToggle);
 	$("#joinMsgBtn").click(joinActivity);
 	$("#commentToggleBtn").click(commentToggle);
+	$("#commentToggleBtn2").click(commentToggle);
 	$("#commentBtn").click(newComment);
 	$("#noticeToggleBtn").click(noticeToggle);
 	$("#noticeBtn").click(newNotice);

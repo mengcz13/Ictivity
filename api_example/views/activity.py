@@ -75,7 +75,7 @@ def ginfo(request):
         id = (int)(request.POST.get("id", 0))
         ##########
         # below are just for testing
-        if ((id > 7) or (id <= 0) or ((id % 4) == 0) or ((id % 4) == 3)):
+        if ((id > 7) or (id <= 0)):
             dict['error_code'] = 2 # means invalid activity_id
         else:
             dict['id'] = id
@@ -201,7 +201,7 @@ def members(request):
         else:
             members = [];
             for i in range(1, 100):
-                members.append({"nickname": "testUser" + str(i), "ismanager": bool(i % 3 == 0)});
+                members.append({"id": i, "nickname": "testUser" + str(i), "ismanager": bool(i % 3 == 0)});
             dict['members'] = members
     return JsonResponse(dict)
 
@@ -242,4 +242,67 @@ def newNotice(request):
                 dict['error_code'] = 4 # no legal title received
     return JsonResponse(dict)
         
+def editInfo(request):
+    dict = {}
+    if request.method != 'POST':
+        dict['error_code'] = 201 
+    else:
+        dict['error_code'] = 200
+        if (request.POST.get('access_token', 0) != testToken):
+            dict['error_code'] = 1
+        else:
+            id = request.POST.get("id", 0)
+            tags = request.POST.get("tags", 0)
+            description = request.POST.get("description", 0)
+            isPublic = request.POST.get("ispublic", -1)
+            isVerify = request.POST.get("isverify", -1)
+            if ((id == 0) or (isPublic == -1) or (isVerify == -1)):
+                dict['error_code'] = 2 #errorcode:2 information lack
+    return JsonResponse(dict)
 
+def verifyList(request):
+    dict = {}
+    if request.method != 'POST':
+        dict['error_code'] = 201 
+    else:
+        dict['error_code'] = 200
+        if (request.POST.get('access_token', 0) != testToken):
+            dict['error_code'] = 1
+        else:
+            if (request.POST.get("act_id", 0) == 0):
+                dict['error_code'] = 2 #invalid activity id
+            else:
+                list = []
+                for i in range(1, 10):
+                    list.append({"id": int(random.uniform(10, 100)), "msg": "I want to join this activity. My father is Li Gang!"})
+                dict['list'] = list
+    return JsonResponse(dict)
+
+def verifyReject(request):
+    dict = {}
+    if request.method != 'POST':
+        dict['error_code'] = 201 
+    else:
+        dict['error_code'] = 200
+        if (request.POST.get('access_token', 0) != testToken):
+            dict['error_code'] = 1
+        else:
+            if (request.POST.get("act_id", 0) == 0) or (request.POST.get("id", 0) == 0):
+                dict['error_code'] = 2 #invalid activity id or userid
+    return JsonResponse(dict)
+    
+    
+def verifyPass(request):
+    dict = {}
+    if request.method != 'POST':
+        dict['error_code'] = 201 
+    else:
+        dict['error_code'] = 200
+        if (request.POST.get('access_token', 0) != testToken):
+            dict['error_code'] = 1
+        else:
+            if (request.POST.get("act_id", 0) == 0) or (request.POST.get("id", 0) == 0):
+                dict['error_code'] = 2 #invalid activity id or userid
+    return JsonResponse(dict)
+    
+    
