@@ -26,7 +26,8 @@ def Ictuser_register(request):
 	if User.objects.filter(username=data['username']).exists():
 		return JsonResponse({'error_code': 1})
 	user = User.objects.create_user(data['username'], data['email'], data['password'])
-	userprofile = UserProfile.objects.create(user=user, location=data['location'], birthday=data['birthday'], nickname='', face_id='', age=0)
+	nickname = data['username']
+	userprofile = UserProfile.objects.create(user=user, location=data['location'], birthday=data['birthday'], nickname=nickname, face_id='', age=0)
 	return JsonResponse({'error_code': 200, '_id': user.id})
 
 

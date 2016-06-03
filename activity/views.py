@@ -17,7 +17,7 @@ def activity_create(request):
 	data = request.POST
 	activity = Activity(name=data['name'], description=data['description'], ispublic=(request.POST['ispublic'] == 'true'), isverify=(request.POST['isverify'] == 'true'))
 	activity.save()
-	for tagn in data['tags[]']:
+	for tagn in data['tags'].split(','):
 		try:
 			tag = Tag.objects.get(name=tagn)
 			activity.tags.add(tag)
@@ -88,7 +88,9 @@ def activity_ginfo(request):
 		'name': activity.name,
 		'tags': [tag.name for tag in activity.tags.all()],
 		'description': activity.description,
-		'count': activity.userinfoforactivity.filter(ispart=True).count()
+		'count': activity.userinfoforactivity.filter(ispart=True).count(),
+		'ispublic': activity.ispublic,
+		'isverify': activity.isverify
 		}
 		return JsonResponse(jresp)
 	else:
@@ -106,7 +108,8 @@ def activity_editinfo(request):
 		activity.ispublic = (request.POST['ispublic'] == 'true')
 		activity.isverify=(request.POST['isverify'] == 'true')
 		activity.save()
-		for tagn in data['tag'].split():
+		data = request.POST
+		for tagn in data['tags'].split(','):
 			try:
 				tag = Tag.objects.get(name=tagn)
 				activity.tags.add(tag)
@@ -269,9 +272,10 @@ def activity_verifyPass(request):
 		activity = Activity.objects.get(id=request.POST['act_id'])
 		if not activity.userinfoforactivity.filter(user=request.user, ismanager=True).exists():
 			return JsonResponse({'error_code': 1})
-		ui = activity.userinfoforactivity.filter(user=User.objects.get(id=request.POST['id']))
+		ui = activity.userinfoforactivity.get(user=User.objects.get(id=request.POST['id']))
 		ui.iswaitingforva = False;
 		ui.ispart = True;
+		ui.save()
 		return JsonResponse({'error_code': 200})
 	except:
 		return JsonResponse({'error_code': 1})

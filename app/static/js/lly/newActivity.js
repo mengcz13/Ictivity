@@ -11,8 +11,8 @@ $("document").ready(function() {
 				name: $("#activitiyName_input").val(),
 				tags: $("#tags_input").val(),
 				description: $("#description_input").val(),
-				ispublic: $("#ispublic_input").is(':checked'),
-				isverify: $("#isverify_input").is(':checked')
+				ispublic: $("#signIspublic_input").is(':checked'),
+				isverify: $("#signIsverify_input").is(':checked')
 			},
 			function(data) {
 				data = eval(data);
