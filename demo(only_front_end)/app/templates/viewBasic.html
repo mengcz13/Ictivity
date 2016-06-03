@@ -1,0 +1,68 @@
+{% extends 'basic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}ViewBasic{% endblock %}
+
+{% block body %}
+	<nav class="nav navbar inverse" role="navigation" style="background: #282828">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="{% url 'index' %}">
+				<img style="max-height: 30px" src="{% static 'images/logo.png' %}" />
+			</a>
+		</div>
+		<ul class="nav navbar-nav navbar-right" id="logined_topbar">
+        	<ul class="dropdown">
+         		<li class="menu-level-0 first parent">
+         			<a href="#" hidefocus="true" style="outline: none;">
+               			<i class="icon-menu icon-menu3"></i>
+               			<span id="topbar_nickName">NickName</span>
+            		</a>
+            		<ul class="sub-menu-1">
+              			<li class="menu-level-1 first"><a href="{% url 'holdList' %}">发起的活动</a></li>
+              		 	<li class="menu-level-1"><a href="{% url 'joinList' %}">参加的活动</a></li>
+              		 	<li class="dropdowndivider"></li>
+              		 	<li class="menu-level-1"><a href="{% url 'newActivity' %}">发起新活动</a></li>
+              		 	<li class="dropdowndivider"></li>
+              		 	<li class="menu-level-1"><a href="{% url 'profile' %}">个人信息设置</a></li>
+              		 	<li class="dropdowndivider"></li>
+              		 	<li class="menu-level-1 last"><a href="#" onclick="logoutDo()">登出</a></li>
+            		</ul>
+         		</li>
+         	</ul>
+      	</ul>
+      	<ul class="nav navbar-nav navbar-right" id="unlogin_topbar">
+      		<ul class="dropdown">
+      			<li class="menu-level-0 first">
+      				<a href="{% url 'login' %}" hidefocus="true" style="outline: none;">
+      					<span>登录</span>
+      				</a>
+      			</li>
+      			<li class="menu-level-0 last">
+      				<a href="{% url 'register' %}" hidefocus="true" style="outline: none;">
+      					<span>注册</span>
+      				</a>
+      			</li>
+      		</ul>
+      	</ul>
+	</nav>
+	
+	{% block contents %}
+	<div class="container container-wide">
+		<!-- content -->
+		<div class="content " role="main">
+			To be covered.
+		</div>
+	</div>
+	{% endblock %}
+	
+	<nav class="nav navbar-static-bottom" role="navigation" style="background: #282828">
+		<div class="text-center">
+			<img src="{% static 'images/logo.png' %}" />
+		</div>
+		<p class="text-center" style="color:#c3c3c3">发起活动，发现快乐，尽在Ictivity</p>
+		<br>
+		<br>
+	</nav>
+	
+<script src="{% static 'js/lly/viewGlobal.js' %}"></script>
+{% endblock %}
