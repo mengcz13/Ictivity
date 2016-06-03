@@ -2,13 +2,17 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
-from Ictuser.models import UserProfile
+from Ictuser.models import *
 from django.shortcuts import render, render_to_response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django import forms
 from django.template import RequestContext
 from django.views.decorators.http import require_http_methods, require_POST
+import ictivity.facepp as facepp
+from ictivity.settings import FACEPP_API_KEY, FACEPP_API_SECRET, FACEPP_GROUP_NAME, FACEPP_API_URL, BASE_DIR
+import requests
+import os
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
@@ -27,7 +31,6 @@ def Ictuser_register(request):
 
 
 @ensure_csrf_cookie
-@require_POST
 def Ictuser_login(request):
 	if request.method == 'GET':
 		if request.user.is_authenticated():
@@ -75,8 +78,11 @@ def Ictuser_userinfo(request):
 @require_POST
 def Ictuser_changeinfo(request):
 	try:
-		request.user.update(email=request.POST['email'])
-		request.user.userprofile.update(location=request.POST['location'], birthday=request.POST['birthday'])
+		request.user.email = request.POST['email']
+		request.user.userprofile.location = request.POST['location']
+		request.user.userprofile.birthday = request.POST['birthday']
+		request.user.userprofile.save()
+		request.user.save()
 		return JsonResponse({'error_code': 200})
 	except:
 		return JsonResponse({'error_code': 1})
@@ -98,4 +104,32 @@ def Ictuser_changepwd(request):
 @ensure_csrf_cookie
 @require_POST
 def Ictuser_token(request):
-	return JsonResponse({'error_code': 200, 'access_token': 1})
+	return JsonResponse({'error_code': 200, 'access_token': request.user.id})
+
+
+@login_required
+@ensure_csrf_cookie
+@require_POST
+def Ictuser_photos(request):
+	return JsonResponse({
+		'error_code': 200,
+		'photos': [ { 'url': photo.image.url, 'time': photo.added_time } for photo in request.user.photos.all() ]
+		})
+
+
+@login_required
+@ensure_csrf_cookie
+@require_POST
+def Ictuser_uploadphoto(request):
+	usernewphoto = UserPhoto(user=request.user, image=request.FILES['photo'])
+	usernewphoto.save()
+	faceapi = facepp.API(FACEPP_API_KEY, FACEPP_API_SECRET)
+	if request.user.userprofile.face_id == '':
+		fpppc = faceapi.person.create(person_name=request.user.username, group_name=FACEPP_GROUP_NAME)
+		request.user.userprofile.face_id = fpppc['person_id']
+		request.user.userprofile.save()
+	print os.path.join(BASE_DIR, usernewphoto.image.url[1:])
+	newface = faceapi.detection.detect(img=facepp.File(os.path.join(BASE_DIR, usernewphoto.image.url[1:])))
+	faceapi.person.add_face(person_id=request.user.userprofile.face_id, face_id=newface['face'][0]['face_id'])
+	faceapi.train.identify(group_name=FACEPP_GROUP_NAME)
+	return JsonResponse({'error_code': 200})

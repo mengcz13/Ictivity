@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from Ictuser.models import UserProfile
-from activity.models import Tag, Comment, Activity, Notice
+from activity.models import *
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -15,13 +15,17 @@ from django.views.decorators.http import require_http_methods, require_POST
 @require_POST
 def activity_create(request):
 	data = request.POST
-	activity = Activity.objects.create(name=data['name'], description=data['description'])
-	for tagn in data['tag'].split():
-		tag = Tag.objects.create(name=tagn)
-		activity.tags.add(tag)
-	activity.users.add(request.user)
-	activity.hold_users.add(request.user)
-	activity.managers.add(request.user)
+	activity = Activity(name=data['name'], description=data['description'], ispublic=(request.POST['ispublic'] == 'true'), isverify=(request.POST['isverify'] == 'true'))
+	activity.save()
+	for tagn in data['tags[]']:
+		try:
+			tag = Tag.objects.get(name=tagn)
+			activity.tags.add(tag)
+		except:
+			tag = Tag.objects.create(name=tagn)
+			activity.tags.add(tag)
+	userinfo = UserInfoForActivity(user=request.user, activity=activity, iswaitingforva=False, ispart=True, ismanager=True, isfounder=True, nicknameforact=request.user.username)
+	userinfo.save()
 	return JsonResponse({'error_code': 200, '_id': activity.id})
 
 
@@ -32,14 +36,17 @@ def activity_info(request):
 	activity = Activity.objects.get(id=request.POST['id'])
 	if activity is not None:
 		if not activity.ispublic:
-			if not activity.users.filter(id=request.user.id).exists():
+			if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 				return JsonResponse({'error_code': 1})
 		jresp = {
+		'error_code': 200,
 		'id': activity.id,
 		'name': activity.name,
-		'tags': [{'name': tag.name} for tag in activity.tags.all()],
+		'tags': [tag.name for tag in activity.tags.all()],
 		'description': activity.description,
-		'count': activity.users.count()
+		'count': activity.userinfoforactivity.filter(ispart=True).count(),
+		'ispublic': activity.ispublic,
+		'isverify': activity.isverify
 		}
 		return JsonResponse(jresp)
 	else:
@@ -52,7 +59,7 @@ def activity_info(request):
 def activity_holdlist(request):
 	jsonresp = {
 	'error_code': 200,
-	'ids': [{'id': act.id} for act in request.user.activities_managed.all()]
+	'ids': [{'id': act.activity.id} for act in request.user.userinfoforactivity.filter(isfounder=True)]
 	}
 	return JsonResponse(jsonresp)
 
@@ -63,7 +70,7 @@ def activity_holdlist(request):
 def activity_joinlist(request):
 	jsonresp = {
 	'error_code': 200,
-	'ids': [{'id': act.id} for act in request.user.activities.all()]
+	'ids': [{'id': act.activity.id} for act in request.user.userinfoforactivity.filter(ispart=True)]
 	}
 	return JsonResponse(jsonresp)
 
@@ -76,11 +83,12 @@ def activity_ginfo(request):
 		if not activity.ispublic:
 			return JsonResponse({'error_code': 1})
 		jresp = {
+		'error_code': 200,
 		'id': activity.id,
 		'name': activity.name,
-		'tags': [{'name': tag.name} for tag in activity.tags.all()],
+		'tags': [tag.name for tag in activity.tags.all()],
 		'description': activity.description,
-		'count': activity.users.count()
+		'count': activity.userinfoforactivity.filter(ispart=True).count()
 		}
 		return JsonResponse(jresp)
 	else:
@@ -93,11 +101,18 @@ def activity_ginfo(request):
 def activity_editinfo(request):
 	activity = Activity.objects.get(id=request.POST['id'])
 	if activity is not None:
-		activity.tags.all().delete()
-		activity.update(description=request.POST['description'], ispublic=request.POST['ispublic'], isverify=request.POST['isverify'])
+		activity.tags.clear()
+		activity.description = request.POST['description']
+		activity.ispublic = (request.POST['ispublic'] == 'true')
+		activity.isverify=(request.POST['isverify'] == 'true')
+		activity.save()
 		for tagn in data['tag'].split():
-			tag = Tag.objects.create(name=tagn)
-			activity.tags.add(tag)
+			try:
+				tag = Tag.objects.get(name=tagn)
+				activity.tags.add(tag)
+			except:
+				tag = Tag.objects.create(name=tagn)
+				activity.tags.add(tag)
 		return JsonResponse({'error_code': 200})
 	else:
 		return JsonResponse({'error_code': 1})
@@ -107,16 +122,18 @@ def activity_editinfo(request):
 @login_required
 @require_POST
 def activity_role(request):
-	activity = Activity.objects.get(id=request.POST['id'])
-	if activity is not None:
-		if activity.managers.filter(id=request.user.id).exists():
+	try:
+		uiforact = request.user.userinfoforactivity.get(activity=Activity.objects.get(id=request.POST['id']))
+		if uiforact is None:
+			return JsonResponse({'role': 0, 'error_code': 200})
+		if uiforact.ismanager:
 			return JsonResponse({'role': 2, 'error_code': 200})
-		elif activity.users.filter(id=request.user.id).exists():
+		elif uiforact.ispart:
 			return JsonResponse({'role': 1, 'error_code': 200})
 		else:
 			return JsonResponse({'role': 0, 'error_code': 200})
-	else:
-		return JsonResponse({'error_code': 1})
+	except:
+		return JsonResponse({'role': 0, 'error_code': 200})
 
 
 @ensure_csrf_cookie
@@ -125,7 +142,12 @@ def activity_role(request):
 def activity_join(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		activity.waiting_users.add(request.user)
+		ui = UserInfoForActivity(user=request.user, activity=activity, nicknameforact=request.POST['nickname'], join_msg=request.POST['join_msg'])
+		if not activity.isverify:
+			ui.iswaitingforva = False
+			ui.ispart = True
+		ui.save()
+		return JsonResponse({'error_code': 200})
 	except:
 		return JsonResponse({'error_code': 1})
 
@@ -136,9 +158,9 @@ def activity_join(request):
 def activity_notices(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		if not activity.users.filter(id=request.user.id).exists():
+		if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 			return JsonResponse({'error_code': 1})
-		notices = activity.notices.ordered_by('-added_time').all()
+		notices = activity.notices.all().order_by('-added_time')
 		return JsonResponse({
 			'notices': [{'title': note.title, 'text': note.text, 'time': note.added_time} for note in notices],
 			'error_code': 200
@@ -153,11 +175,11 @@ def activity_notices(request):
 def activity_comments(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		if not activity.users.filter(id=request.user.id).exists():
+		if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 			return JsonResponse({'error_code': 1})
-		comments = activity.comments.ordered_by('-added_time').all()
+		comments = activity.comments.all().order_by('-added_time')
 		return JsonResponse({
-			'comments': [{'text': comm.text, 'nickname': comm.user.username, 'time': comm.added_time} for comm in comments],
+			'comments': [{'text': comm.text, 'nickname': activity.userinfoforactivity.get(user=comm.author).nicknameforact, 'time': comm.added_time} for comm in comments],
 			'error_code': 200
 			})
 	except:
@@ -170,10 +192,10 @@ def activity_comments(request):
 def activity_members(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		if not activity.users.filter(id=request.user.id).exists():
+		if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 			return JsonResponse({'error_code': 1})
 		return JsonResponse({
-			'members': [{'nickname': user.username, 'ismanager': activity.users.filter(id=user.id).exists()} for user in activity.users.all()],
+			'members': [{'nickname': ui.nicknameforact, 'ismanager': ui.ismanager} for ui in activity.userinfoforactivity.filter(ispart=True)],
 			'error_code': 200
 			})
 	except:
@@ -186,7 +208,7 @@ def activity_members(request):
 def activity_newcomment(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		if not activity.users.filter(id=request.user.id).exists():
+		if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 			return JsonResponse({'error_code': 1})
 		Comment.objects.create(text=request.POST['comment'], author=request.user, activity=activity)
 		return JsonResponse({'error_code': 200})
@@ -200,7 +222,7 @@ def activity_newcomment(request):
 def activity_newnotice(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['id'])
-		if not activity.managers.filter(id=request.user.id).exists():
+		if not activity.userinfoforactivity.filter(user=request.user, ismanager=True).exists():
 			return JsonResponse({'error_code': 1})
 		Notice.objects.create(title=request.POST['title'], text=request.POST['notice'], author=request.user, activity=activity)
 		return JsonResponse({'error_code': 200})
@@ -212,19 +234,45 @@ def activity_newnotice(request):
 @login_required
 @require_POST
 def activity_verifyList(request):
-	pass
+	try:
+		activity = Activity.objects.get(id=request.POST['act_id'])
+		if not activity.userinfoforactivity.filter(user=request.user, ismanager=True).exists():
+			return JsonResponse({'error_code': 1})
+		return JsonResponse({
+			'list': [{'id': ui.user.id, 'msg': ui.join_msg} for ui in activity.userinfoforactivity.filter(iswaitingforva=True)],
+			'error_code': 200
+			})
+	except:
+		return JsonResponse({'error_code': 1})
 
 
 @ensure_csrf_cookie
 @login_required
 @require_POST
 def activity_verifyReject(request):
-	pass
+	try:
+		activity = Activity.objects.get(id=request.POST['act_id'])
+		if not activity.userinfoforactivity.filter(user=request.user, ismanager=True).exists():
+			return JsonResponse({'error_code': 1})
+		ui = activity.userinfoforactivity.filter(user=User.objects.get(id=request.POST['id']))
+		ui.delete()
+		return JsonResponse({'error_code': 200})
+	except:
+		return JsonResponse({'error_code': 1})
 
 
 @ensure_csrf_cookie
 @login_required
 @require_POST
 def activity_verifyPass(request):
-	pass
+	try:
+		activity = Activity.objects.get(id=request.POST['act_id'])
+		if not activity.userinfoforactivity.filter(user=request.user, ismanager=True).exists():
+			return JsonResponse({'error_code': 1})
+		ui = activity.userinfoforactivity.filter(user=User.objects.get(id=request.POST['id']))
+		ui.iswaitingforva = False;
+		ui.ispart = True;
+		return JsonResponse({'error_code': 200})
+	except:
+		return JsonResponse({'error_code': 1})
 		
