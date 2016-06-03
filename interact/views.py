@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods, require_POST
-import datetime
+from datetime import datetime
+from django.utils import timezone
 
 # Create your views here.
 @ensure_csrf_cookie
@@ -19,7 +20,7 @@ def interact_createSign(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['act_id'])
 		ui = UserInfoForActivity.objects.get(user=request.user, activity=activity, ismanager=True)
-		newsign = Sign(activity=activity, name=request.POST['name'], timeL=request.POST['timeL'], timeR=request.POST['timeR'], command=request.POST['command'], isface=(request.POST['isface']=='true'). isverify=(request.POST['isverify']=='true'))
+		newsign = Sign(activity=activity, name=request.POST['name'], timeL=request.POST['timeL'], timeR=request.POST['timeR'], command=request.POST['command'], isface=(request.POST['isface']=='true'), isverify=(request.POST['isverify']=='true'))
 		newsign.save()
 		return JsonResponse({'_signid': newsign.id, 'error_code': 200})
 	except:
@@ -98,6 +99,7 @@ def interact_signed(request):
 @require_POST
 def interact_signinfo(request):
 	try:
+		activity = Activity.objects.get(id=request.POST['act_id'])
 		sign = Sign.objects.get(id=request.POST['sign_id'])
 		ui = UserInfoForActivity.objects.get(user=request.user, activity=activity, ismanager=True)
 		return JsonResponse({
@@ -134,10 +136,13 @@ def interact_signurl(request):
 @login_required
 @require_POST
 def interact_signTimeVerify(request):
-	try:
+	#try:
 		signid = Sign.objects.get(id=request.POST['code'])
-		dt = datetime.now()
-		if (dt >= signid.timeL && dt <= signid.timeR):
+		dt = timezone.now()
+		print dt
+		print signid.timeL
+		print signid.timeR
+		if (dt >= signid.timeL and dt <= signid.timeR):
 			request.session['code'] = request.POST['code']
 			return JsonResponse({
 				'error_code': 200,
@@ -147,8 +152,8 @@ def interact_signTimeVerify(request):
 				})
 		else:
 			return JsonResponse({'error_code': 1})
-	except:
-		return JsonResponse({'error_code': 1})
+	#except:
+		#return JsonResponse({'error_code': 1})
 
 
 @ensure_csrf_cookie

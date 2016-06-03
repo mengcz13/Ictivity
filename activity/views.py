@@ -198,7 +198,7 @@ def activity_members(request):
 		if not activity.userinfoforactivity.filter(user=request.user, ispart=True).exists():
 			return JsonResponse({'error_code': 1})
 		return JsonResponse({
-			'members': [{'nickname': ui.nicknameforact, 'ismanager': ui.ismanager} for ui in activity.userinfoforactivity.filter(ispart=True)],
+			'members': [{'id': ui.user.id, 'nickname': ui.nicknameforact, 'ismanager': ui.ismanager} for ui in activity.userinfoforactivity.filter(ispart=True)],
 			'error_code': 200
 			})
 	except:
