@@ -138,5 +138,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SESSION_COOKIE_AGE=60*30
 
 
-
 LOGIN_URL = '/api/user/login'
+
+
+FACEPP_API_KEY = '4a20a739f33e674d066b3aff687304e8'
+FACEPP_API_SECRET = 'OG_J43sUn2M5JPzrG4e0cVZ60SLKdZGE'
+FACEPP_API_URL = 'http://apicn.faceplusplus.com'
+FACEPP_GROUP_NAME = 'Ictivity'

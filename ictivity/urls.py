@@ -18,6 +18,7 @@ from django.conf.urls import url, include
 from django.conf.urls.static import serve
 from django.contrib.auth.models import User
 from app import urls as app_urls
+from ictivity import views
 from settings import STATIC_ROOT
 from settings import MEDIA_ROOT
 
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^api/user/', include('Ictuser.urls')),
     url(r'^api/activity/', include('activity.urls')),
     url(r'^api/interact/', include('interact.urls')),
+    url(r'^api/search/?$', views.search),
 
     url(r'^', include(app_urls.urlpatterns)),
     url(r'^static/(.*)$', serve, {'document_root':STATIC_ROOT}),
