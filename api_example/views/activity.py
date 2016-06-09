@@ -75,16 +75,16 @@ def ginfo(request):
         id = (int)(request.POST.get("id", 0))
         ##########
         # below are just for testing
-        if ((id > 7) or (id <= 0)):
-            dict['error_code'] = 2 # means invalid activity_id
-        else:
-            dict['id'] = id
-            dict['name'] = 'Test Activity ' + str(id)
-            dict['tags'] = ['test', 'example']
-            dict['description'] = 'goddawn such many banists and magician obsessed with drugs'
-            dict['count'] = int(random.uniform(10,100))
-            dict['ispublic'] = ((id % 4) >=2)
-            dict['isverify'] = ((id % 3) >=1)
+        ##if ((id > 7) or (id <= 0)):
+        ##    dict['error_code'] = 2 # means invalid activity_id
+        ##else:
+        dict['id'] = id
+        dict['name'] = 'Test Activity ' + str(id)
+        dict['tags'] = ['test', 'example']
+        dict['description'] = 'goddawn such many banists and magician obsessed with drugs'
+        dict['count'] = int(random.uniform(10,100))
+        dict['ispublic'] = ((id % 4) >=2)
+        dict['isverify'] = ((id % 3) >=1)
         ##########
     return JsonResponse(dict)
     

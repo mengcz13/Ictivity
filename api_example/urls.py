@@ -44,6 +44,9 @@ urlpatterns = [
     url(r'interact/msigned', views.interact.msigned, name="api/msigned"),
     url(r'interact/signInfo', views.interact.signInfo, name="api/signInfo"),
     url(r'interact/createVote', views.interact.createVote, name="api/createVote"),
+    url(r'interact/voteList', views.interact.voteList, name="api/voteList"),
+    url(r'interact/voteInfo', views.interact.voteInfo, name="api/voteInfo"),
+    url(r'interact/voteStat', views.interact.voteStat, name="api/voteStat"),
     url(r'interact/signurl', views.interact.signurl, name="api/signurl"),
     url(r'interact/voteurl', views.interact.voteurl, name="api/voteurl"),
     url(r'interact/signTimeVerify', views.interact.signTimeVerify, name="api/signTimeVerify"),
@@ -51,5 +54,6 @@ urlpatterns = [
     url(r'interact/voteTimeVerify', views.interact.voteTimeVerify, name="api/voteTimeVerify"),
     url(r'interact/vote', views.interact.vote, name="api/vote"),
     
-    url(r'search', view.search, name="api/search"),
+    url(r'search$', view.search, name="api/search"),
+    url(r'command$', view.command, name="api/command"),
 ]

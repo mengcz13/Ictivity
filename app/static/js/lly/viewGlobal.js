@@ -1,4 +1,4 @@
-var userInfo, accessToken;
+var userInfo, accessToken = "";
 var logined = false;
 var loginInfoed = false;
 

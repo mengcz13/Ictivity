@@ -5,6 +5,10 @@ var signInfo = [];
 var signGetCnt = 0;
 var	members = [];
 var membersRead = false;
+var focusSignId = 0;
+var	focusVoteId = 0;
+var	votes = [];
+var signInited = false;
 
 $(document).ready(function() {
 	$("#infoTab .alert").hide();
@@ -13,15 +17,24 @@ $(document).ready(function() {
 	$("#signModal .alert").hide();
 	$("#signListDiv").hide();
 	$("#noSignListDiv").hide();
+	$("#voteModal .alert").hide();
+	$("#voteListDiv").hide();
+	$("#prizeModal .alert").hide();
 
 	actInit();
 	infoInit();
 	verifyInit();
 	signInit();
+	prizeInit();
 	
 	$("#changeInfoBtn").click(changeInfo);
 	$("#newSignToggleBtn").click(signToggle);
 	$("#signBtn").click(sign);
+	$("#newVoteToggleBtn").click(voteToggle);
+	$("#voteBtn").click(vote);
+	$("#voteDetailRefreshBtn").click(voteDetailStatInit);
+	$("#newPrizeToggleBtn").click(prizeToggle);
+	$("#prizeBtn").click(prize);
 });
 
 function actInit() {
@@ -94,6 +107,8 @@ function infoInit() {
 		$("#isverify_input").attr("checked", true);
 	else
 		$("#isverify_input").attr("checked", false);
+	$("#ispublic_input").customInput();
+	$("#isverify_input").customInput();
 	var tagsS = "";
 	for (i in activity.tags)
 		if (i != activity.tags.length - 1)
@@ -314,14 +329,14 @@ function signInit() {
 						{
 							access_token: accessToken,
 							act_id: activity.id,
-							sign_id: signList[i]
+							sign_id: signList[i].id
 						},
 						function(data) {
 							data = eval(data);
 							if (data.error_code == "200") {
 								var no = -1;
 								for (i in signList)
-									if (data._id == signList[i])
+									if (data._id == signList[i].id)
 										 no = i;
 								signInfo[no] = data;
 								++signGetCnt;
@@ -354,10 +369,13 @@ function signInfoInit() {
 		s += "</td></tr>"
 	}
 	$("#signList").html(s);
+	signInited = true;
 }
 
 function signDetailToggle(sign_id) {
 	signDetailInit(sign_id);
+	voteListInit(sign_id);
+	focusSignId = sign_id;
 	$("#signDetailModal").modal();
 }
 
@@ -467,4 +485,255 @@ function signDetailInit(sign_id) {
 	);
 	
 	
+}
+
+function voteListInit(sign_id) {
+	$.post(
+		"/api/interact/voteList",
+		{
+			access_token: accessToken,
+			act_id: activity.id,
+			sign_id: sign_id
+		},
+		function(data) {
+			data = eval(data);
+			if (data.error_code == "200") {
+				s = "";
+				for (i in data.ids) {
+					s += "<tr id='voteItem" + data.ids[i] + "'></tr>";
+					$.post(
+						"/api/interact/voteInfo",
+						{
+							access_token: accessToken,
+							act_id: activity.id,
+							sign_id: sign_id,
+							vote_id: data.ids[i]
+						},
+						function(data) {
+							data = eval(data);
+							if (data.error_code == "200") {
+								votes[data._id] = data;
+								s = "<td>" + data.name + "</td>" + "<td>" + 
+								"<a onclick='voteDetailToggle(" + data._id + ")' class='btn btn-small pull-right'>" +
+									"<span class='gradient'>查看</span></a>";
+								$("#voteItem" + data._id).html(s);
+							}
+						}
+					)
+				}
+				$("#voteItemDiv").html(s);
+				$("#noVoteDiv").hide();
+				$("#voteListDiv").show();
+			}
+		}
+	)
+}
+
+function voteDetailToggle(vote_id) {
+	focusVoteId = vote_id;
+	voteDetailInit(vote_id);
+	$("#voteDetailModal").modal();
+}
+
+function voteDetailInit(vote_id) {
+	$("#voteDetailInfoId").html(votes[vote_id]._id);
+	$("#voteDetailInfoName").html(votes[vote_id].name);
+	$("#voteDetailInfoTimeL").html(votes[vote_id].timeL);
+	$("#voteDetailInfoTimeR").html(votes[vote_id].timeR);
+	if (votes[vote_id].ischoose) {
+		$("#voteDetailInfoIsChoose").html("选项式");
+		$("#voteDetailInfoTagsDiv").show();
+		s = "<div class='tagcloud'>";
+		for (i in votes[vote_id].chooselist) {
+			s += "<a href='#'><span>" + votes[vote_id].chooselist[i] + "</span></a>";
+		}
+		s += "</div>";
+		$("#voteDetailInfoTags").html(s);
+	} else {
+		$("#voteDetailInfoIsChoose").html("开放式");
+		$("#voteDetailInfoTagsDiv").hide();
+	}
+	
+	$.post(
+		"/api/interact/voteurl",
+		{
+			access_token: accessToken,
+			act_id: activity.id,
+			sign_id: focusSignId,
+			vote_id: vote_id
+		},
+		function(data) {
+			data = eval(data);
+			if (data.error_code == "200") {
+				var s;
+				s = "<center><a class='btn btn-blue' href='" + data.url + "' target='_blank'>" +
+					"<span class='gradient'>" + "投票入口" + "</span></a></<center>";
+				$("#voteDetailURLDiv").html(s);
+				s = "<center><a class='btn btn-green' href='" + "/interact/qrcodeshow?codeurl=" + data.qrcodeurl + "' target='_blank'>" +
+					"<span class='gradient'>" + "签到二维码入口" + "</span></a></center>";
+				$("#voteDetailPicDiv").html(s);
+			}
+		}
+	);
+	
+	voteDetailStatInit();
+}
+
+function voteDetailStatInit() {
+	$.post(
+		"/api/interact/voteStat",
+		{
+			access_token: accessToken,
+			act_id: activity.id,
+			sign_id: focusSignId,
+			vote_id: focusVoteId
+		},
+		function(data) {
+			data = eval(data);
+			if (data.error_code == "200") {
+				var timestat = "";
+				if (data.timestat == "0")
+					timestat = "<div class='text-warning'>投票尚未开始</div>";
+				if (data.timestat == "1")
+					timestat = "<div class='text-danger'>投票正在进行</div>";
+				if (data.timestat == "2")
+					timestat = "<div class='text-success'>投票已经结束</div>";
+				$("#voteTimestatDiv").html(timestat);
+				var s = "";
+				for (i in data.stat) {
+					s += "<tr><td>" + data.stat[i].choose + "</td><td>" + data.stat[i].count + "</td></tr>";
+				}
+				$("#voteStatDiv").html(s);
+			}
+		}
+	)
+}
+
+function voteToggle() {
+
+	function datetimeInit() {
+		Date.prototype.format = function(format) { 
+      		var date = { 
+              "M+": this.getMonth() + 1, 
+              "d+": this.getDate(), 
+              "h+": this.getHours(), 
+              "m+": this.getMinutes(), 
+              "s+": this.getSeconds(), 
+              "q+": Math.floor((this.getMonth() + 3) / 3), 
+              "S+": this.getMilliseconds() 
+    	 	}; 
+       		if (/(y+)/i.test(format)) { 
+              	format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length)); 
+       		} 
+      		for (var k in date) { 
+              	if (new RegExp("(" + k + ")").test(format)) { 
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length)); 
+              	} 
+       		} 
+    		return format; 
+		} 
+		
+		var nowDate = new Date();
+		
+		var dL = nowDate.format('yyyy-MM-dd hh:mm:ss');
+		$("#voteTimeL").val(dL); 
+		nowDate.setMinutes(nowDate.getMinutes() + 10);
+		var dR = nowDate.format('yyyy-MM-dd hh:mm:ss');
+		$("#voteTimeR").val(dR);
+	}
+
+	if (focusSignId == 0) return;
+	
+	datetimeInit();
+	$("#voteTagsDiv").hide();
+	$("#voteModal").modal();
+}
+
+function voteChooseChange() {
+	if ($("#voteIsChoose").is(':checked')) 
+		$("#voteTagsDiv").show();
+	else
+		$("#voteTagsDiv").hide();
+}
+
+function vote() {
+	var flag = true;
+	$("#voteModal .alert").hide();
+	
+	if ($("#voteNameInput").val() == "") {
+		$("#voteNameWrong").show();
+		flag = false;
+	}
+	
+	if ($("#voteCaptionInput").val() == "") {
+		$("#voteCaptionWrong").show();
+		flag = false;
+	}
+	
+	var dateReg = new RegExp("^[0-9]{4}[-][0-9]{2}[-][0-9]{2} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$");
+	if ((!dateReg.test($("#voteTimeL").val())) ||
+		(!dateReg.test($("#voteTimeR").val()))) {
+		$("#voteTimeWrong").show();
+		flag = false;	
+	}
+	
+	if (($("#voteIsChoose").is(':checked')) & ($("#voteTags").val().indexOf(",") == -1)) {
+		$("#voteTagsWrong").show();
+		flag = false;
+	}
+	
+	if (focusSignId == 0) {
+		$("#voteTokenWrong").show();
+		flag = false;
+	}
+	
+	if (!flag) return;
+	
+	$.post(
+		"/api/interact/createVote",
+		{
+			access_token: accessToken,
+			act_id: activity.id,
+			sign_id: focusSignId,
+			name: $("#voteNameInput").val(),
+			timeL: $("#voteTimeL").val(),
+			timeR: $("#voteTimeR").val(),
+			caption: $("#voteCaptionInput").val(),
+			ischoose: $("#voteIsChoose").is(':checked'),
+			chooselist: $("#voteTags").val()
+		},
+		function(data) {
+			data = eval(data);
+			if (data.error_code == "200") {
+				alert("新投票创建成功。");
+				$("#voteModal").modal("hide");
+				signInit();
+			} else
+				alert("新投票创建失败！");
+		}
+	);
+}
+
+function prizeInit() {
+	if (!signInited) {
+		setTimeout("prizeInit()", 200);
+		return;
+	}
+	for (i in signList) {
+		var now = new Option('【'+signList[i].name+'】的签到者', signList[i].id);
+		document.getElementById("prizeScopeInput").add(now);
+	}
+}
+
+function prizeToggle() {
+	$("#prizeModal").modal();
+}
+
+function prize() {
+	if ($("#prizeNameInput").val() == "") {
+		$("#prizeNameWrong").show();
+		return;
+	}
+	window.location.href = "/prize?name=" + $("#prizeNameInput").val() + "&actid=" + activity.id + "&signid=" + 
+		$("#prizeScopeInput").val() + "&repeat=" + $("#prizeRepeat").is(':checked');
 }

@@ -57,3 +57,24 @@ def signError(request):
 def signSuccess(request):
     return render(request, 'interact/signSuccess.html')
 
+def vote(request):
+    return render(request, 'interact/vote.html')
+
+def voteInfo(request):
+    return render(request, 'interact/voteInfo.html')
+
+def voteError(request):
+    return render(request, 'interact/voteError.html')
+
+def voteSuccess(request):
+    return render(request, 'interact/voteSuccess.html')
+
+def prize(request):
+    return render(request, 'prize.html')
+
+def prizeError(request):
+    return render(request, 'prizeError.html')
+
+def about(request):
+    return render(request, 'about.html')
+
