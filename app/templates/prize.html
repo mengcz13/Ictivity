@@ -1,0 +1,33 @@
+{% extends 'basic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}Ictivity抽奖器{% endblock %}
+
+{% block body %}
+	
+	<div class="container container-wide" style="min-height:500px">
+		<div class="content" role="main">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="widget-container boxed">
+					<div class="widget-title">
+						<h4 style="color: white">
+							Ictivity抽奖器
+						</h4>
+					</div>
+					<div class="inner" id="mainDiv">
+						<center style="padding-bottom:150px; padding-top:150px; font-size:100px" id="mainText">
+							抽奖准备
+						</center>
+						<a id="prizeBtn" class="btn btn-blue btn-blue btn-block">
+							<span class="gradient" id="btnText" style="font-size:30px">数据准备中...</span>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+	
+<script src="{% static 'js/lly/prize.js' %}"></script>
+{% endblock %}

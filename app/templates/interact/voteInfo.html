@@ -1,0 +1,49 @@
+{% extends 'basic.html' %}
+{% load staticfiles %}
+
+{% block subtitle %}投票信息{% endblock %}
+
+{% block body %}
+	
+	<div class="container container-wide" style="min-height:500px">
+		<div class="content" role="main">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="widget-container boxed">
+					<div class="widget-title">
+						<h4 style="color: white">
+							投票信息填写
+						</h4>
+					</div>
+					
+					<div class="inner" style="padding:20px">
+						<center>
+							<h3 id="voteName">投票</h3>
+						</center>
+						<hr>
+							<div id="captionView" style="font-size:18px">
+							</div>
+							<div style="height:20px"></div>
+							<div id="openView">
+								<div class="clearfix" style="margin-bottom:20px">
+  									<div class="field_text_omega">
+  										<input type="text" id="voteMsg">
+  									</div>
+  									<div class="alert alert-danger" id="voteNameWrong">信息填写栏不能为空。</div>
+      							</div>
+							</div>
+							
+							<div id="selectView">
+							</div>
+							<div class="alert alert-danger" id="voteSelectWrong">请选择一个选项。</div>
+						<hr>
+						<a href="#" id="voteBtn" class="btn btn-blue btn-block"><span>投票</span></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+	
+<script src="{% static 'js/lly/voteInfo.js' %}"></script>
+{% endblock %}
