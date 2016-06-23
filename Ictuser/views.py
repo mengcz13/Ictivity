@@ -13,6 +13,7 @@ import ictivity.facepp as facepp
 from ictivity.settings import FACEPP_API_KEY, FACEPP_API_SECRET, FACEPP_GROUP_NAME, FACEPP_API_URL, BASE_DIR
 import requests
 import os
+from django.utils.timezone import utc, localtime
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
@@ -114,7 +115,7 @@ def Ictuser_token(request):
 def Ictuser_photos(request):
 	return JsonResponse({
 		'error_code': 200,
-		'photos': [ { 'url': photo.image.url, 'time': photo.added_time } for photo in request.user.photos.all() ]
+		'photos': [ { 'url': photo.image.url, 'time': localtime(photo.added_time) } for photo in request.user.photos.all() ]
 		})
 
 
@@ -131,6 +132,9 @@ def Ictuser_uploadphoto(request):
 		request.user.userprofile.save()
 	print os.path.join(BASE_DIR, usernewphoto.image.url[1:])
 	newface = faceapi.detection.detect(img=facepp.File(os.path.join(BASE_DIR, usernewphoto.image.url[1:])))
-	faceapi.person.add_face(person_id=request.user.userprofile.face_id, face_id=newface['face'][0]['face_id'])
+	try:
+		faceapi.person.add_face(person_id=request.user.userprofile.face_id, face_id=newface['face'][0]['face_id'])
+	except:
+		pass
 	faceapi.train.identify(group_name=FACEPP_GROUP_NAME)
 	return JsonResponse({'error_code': 200})

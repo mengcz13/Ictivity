@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods, require_POST
+from django.utils.timezone import utc, localtime
 
 # Create your views here.
 @ensure_csrf_cookie
@@ -165,7 +166,7 @@ def activity_notices(request):
 			return JsonResponse({'error_code': 1})
 		notices = activity.notices.all().order_by('-added_time')
 		return JsonResponse({
-			'notices': [{'title': note.title, 'text': note.text, 'time': note.added_time} for note in notices],
+			'notices': [{'title': note.title, 'text': note.text, 'time': localtime(note.added_time)} for note in notices],
 			'error_code': 200
 			})
 	except:
@@ -182,7 +183,7 @@ def activity_comments(request):
 			return JsonResponse({'error_code': 1})
 		comments = activity.comments.all().order_by('-added_time')
 		return JsonResponse({
-			'comments': [{'text': comm.text, 'nickname': activity.userinfoforactivity.get(user=comm.author).nicknameforact, 'time': comm.added_time} for comm in comments],
+			'comments': [{'text': comm.text, 'nickname': activity.userinfoforactivity.get(user=comm.author).nicknameforact, 'time': localtime(comm.added_time)} for comm in comments],
 			'error_code': 200
 			})
 	except:

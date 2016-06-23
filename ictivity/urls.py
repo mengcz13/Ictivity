@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^api/activity/', include('activity.urls')),
     url(r'^api/interact/', include('interact.urls')),
     url(r'^api/search/?$', views.search),
+    url(r'^api/command/?$', views.command),
 
     url(r'^', include(app_urls.urlpatterns)),
     url(r'^static/(.*)$', serve, {'document_root':STATIC_ROOT}),

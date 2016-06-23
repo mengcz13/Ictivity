@@ -112,8 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-#TIME_ZONE = 'Asia/Shanghai'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -146,3 +146,5 @@ FACEPP_API_KEY = '4a20a739f33e674d066b3aff687304e8'
 FACEPP_API_SECRET = 'OG_J43sUn2M5JPzrG4e0cVZ60SLKdZGE'
 FACEPP_API_URL = 'http://apicn.faceplusplus.com'
 FACEPP_GROUP_NAME = 'Ictivity'
+
+ROUTE_URL = 'http://127.0.0.1' # route url for generating qr code
