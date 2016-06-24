@@ -13,7 +13,7 @@ $("document").ready(function() {
 			canpassed = false;
 		}
 		if ($("#password_again_input").val() != $("#password_input").val()) {
-			$("#username_again_wrong").show();
+			$("#password_again_wrong").show();
 			$("#password_input").val("")
 			$("#password_again_input").val("");
 			canpassed = false;

@@ -1,20 +1,25 @@
 var role = -1;
 var activity = "";
 var members;
+var signList;
 
 $(document).ready(function() {
 	$("#mainTab").hide();
 	$("#commentWrong").hide();
 	$("#noticeWrong").hide();
+	$("#noSignDiv").hide();
+	$("#signDiv").hide();
 	actInit();
 	detailInit();
 	noticesInit();
+	signInit();
 	commentsInit();
 	membersInit();
 
 	$("#joinToggleBtn").click(joinToggle);
 	$("#joinMsgBtn").click(joinActivity);
 	$("#commentToggleBtn").click(commentToggle);
+	$("#commentToggleBtn2").click(commentToggle);
 	$("#commentBtn").click(newComment);
 	$("#noticeToggleBtn").click(noticeToggle);
 	$("#noticeBtn").click(newNotice);
@@ -124,7 +129,7 @@ function noticesInit() {
 		setTimeout("noticesInit()", 200);
 		return;
 	}
-	if ((role == 1) || (role == 2)) { // list for tourist(1) and manager(2)
+	if ((role == 1) || (role == 2)) { // list for joiner(1) and manager(2)
 		$.post(
 			"/api/activity/notices",
 			{
@@ -161,12 +166,60 @@ function noticesInit() {
 	}
 }
 
+function signInit() {
+	if (role == -1) {
+		setTimeout("signInit()", 200);
+		return;
+	}
+	if (role == 1) {
+		$.post(
+			"/api/interact/signList",
+			{
+				access_token: accessToken,
+				act_id: activity.id
+			},
+			function(data) {
+				data = eval(data);
+				if (data.error_code == "200") {
+					signList = data.ids;
+					if (data.ids.length == 0) {
+						$("#noSignDiv").show();
+					} else {
+						var s = "";
+						for (i in data.ids) {
+							s += "<tr><td>" + data.ids[i].id + "</td><td>" + data.ids[i].name +
+								"</td><td id='isSign" + data.ids[i].id + "'></td></tr>";
+						}
+						$("#signItems").html(s);
+						$("#signDiv").show();
+					}
+					for (i in signList)
+						$.post(
+							"/api/interact/signed",
+							{
+								access_token: accessToken,
+								act_id: activity.id,
+								sign_id: signList[i].id
+							},
+							function(data) {
+								data = eval(data);
+								if (data.error_code == "200") {
+									$("#isSign" + data._signid).html((data.signed)?"<span class='text-success'>是</span>":"<span class='text-danger'>否</span>");
+								}
+							}
+						);
+				}
+			}
+		);
+	}
+}
+
 function commentsInit() {
 	if (role == -1) {
 		setTimeout("commentsInit()", 200);
 		return;
 	}
-	if ((role == 1) || (role == 2)) { // list for tourist
+	if ((role == 1) || (role == 2)) { // list not for tourist
 		$.post(
 			"/api/activity/comments",
 			{

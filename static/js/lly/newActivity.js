@@ -4,17 +4,15 @@ $("document").ready(function() {
 	
 	$("#createBtn").click(function() {
 		newActivityInit();
-		tagsS = $("#tags_input").val();
-		tagsL = tagsS.split(",");
 		$.post(
 			"/api/activity/create",
 			{
 				access_token: accessToken,
 				name: $("#activitiyName_input").val(),
-				tags: tagsL,
+				tags: $("#tags_input").val(),
 				description: $("#description_input").val(),
-				ispublic: $("#ispublic_input").is(':checked'),
-				isverify: $("#isverify_input").is(':checked')
+				ispublic: $("#signIspublic_input").is(':checked'),
+				isverify: $("#signIsverify_input").is(':checked')
 			},
 			function(data) {
 				data = eval(data);

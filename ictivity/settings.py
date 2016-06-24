@@ -129,11 +129,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # physical address of static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 #STATICFILES_DIRS = (BASE_DIR,'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 #STATICFILES_DIRS += (BASE_DIR,'media')
 
 SESSION_COOKIE_AGE=60*30
@@ -147,4 +147,4 @@ FACEPP_API_SECRET = 'OG_J43sUn2M5JPzrG4e0cVZ60SLKdZGE'
 FACEPP_API_URL = 'http://apicn.faceplusplus.com'
 FACEPP_GROUP_NAME = 'Ictivity'
 
-ROUTE_URL = 'http://127.0.0.1' # route url for generating qr code
+ROUTE_URL = 'http://iactivity.chinacloudapp.cn' # route url for generating qr code
