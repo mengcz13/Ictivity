@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
@@ -168,10 +168,12 @@ def interact_signTimeVerify(request):
 
 
 @ensure_csrf_cookie
-@login_required
+#@login_required
 @require_POST
 def interact_sign(request):
-	#try:
+	try:
+		if not request.user.is_authenticated():
+			return HttpResponseRedirect('/user/login')
 		signid = Sign.objects.get(id=request.session['code'])
 		if (signid.isface):
 			if (signid.command == request.POST['command']):
@@ -195,8 +197,8 @@ def interact_sign(request):
 				return JsonResponse({'error_code': 200})
 			else:
 				return JsonResponse({'error_code': 1})
-	# except:
-	# 	return JsonResponse({'error_code': 1})
+	except:
+		return JsonResponse({'error_code': 1})
 
 
 @ensure_csrf_cookie
