@@ -53,6 +53,13 @@ def interact_msigned(request):
 	try:
 		activity = Activity.objects.get(id=request.POST['act_id'])
 		manageri = UserInfoForActivity.objects.get(user=request.user, activity=activity, ismanager=True)
+		if (request.POST['sign_id'] == '0'):
+			return JsonResponse({
+				'_userid': request.POST['user_id'],
+				'signed': True,
+				'msg': 'aaa',
+				'error_code': 200
+				})
 		sign = Sign.objects.get(id=request.POST['sign_id'])
 		targetuser = sign.signedusers.filter(user=User.objects.get(id=request.POST['user_id']))
 		if targetuser.exists():
